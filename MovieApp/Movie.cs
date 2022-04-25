@@ -68,7 +68,6 @@ public class Movie : IMovie
     //                  if the member is in the borrowers list, do not add the member to the borrowers list and return false.  
     public bool AddBorrower(IMember member)
     {
-        //To be completed
         if (AvailableCopies >= 1 && !Borrowers.Search(member))
         {
             Borrowers.Add(member);
@@ -87,7 +86,6 @@ public class Movie : IMovie
     //                  otherwise, return false.
     public bool RemoveBorrower(IMember member)
     {
-        //To be completed
         if (Borrowers.Search(member))
         {
             Borrowers.Delete(member);
@@ -105,7 +103,6 @@ public class Movie : IMovie
     //                 return +1, if this movie's title is greater than another movie's title by dictionary order
     public int CompareTo(IMovie another)
     {
-        //To be completed
         Movie other = (Movie)another;
         return this.Title.CompareTo(other.Title);
     }
@@ -115,7 +112,6 @@ public class Movie : IMovie
     //Post-condition: A string containing the title, genre, classification, duration, and the number of available copies of this movie has been returned
     public string ToString()
     {
-        //To be completed
         return $"{Title}, {Genre}, {Classification}, {Duration}, {AvailableCopies}";
     }
 }
