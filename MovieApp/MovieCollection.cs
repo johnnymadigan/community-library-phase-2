@@ -76,6 +76,7 @@ public class MovieCollection : IMovieCollection
 		{
 			if (root == null) root = new BTreeNode(movie); // empty tree? first node
 			else Insert(movie, root); // kick off recursive travel to insert as leaf
+			count++;
 			return true;
 		}
 		else return false;
@@ -183,6 +184,7 @@ public class MovieCollection : IMovieCollection
 						parent.RChild = c;
 				}
 			}
+			count--;
 			return true; // deletion complete
 		}
 		else return false; // not found
@@ -213,8 +215,8 @@ public class MovieCollection : IMovieCollection
 		// but obviously starts with the root of the entire tree as the first one
 		if (parent != null)
 		{
-			if (title.CompareTo(parent.Movie) == 0) return parent.Movie;
-			else if (title.CompareTo(parent.Movie) < 0) return Search(title, parent.LChild);
+			if (title.CompareTo(parent.Movie.Title) == 0) return parent.Movie;
+			else if (title.CompareTo(parent.Movie.Title) < 0) return Search(title, parent.LChild);
 			else return Search(title, parent.RChild);
 		}
 		else return null;
@@ -226,6 +228,25 @@ public class MovieCollection : IMovieCollection
 	public IMovie[] ToArray()
 	{
 		//To be completed
+		// in-order traversal
+		// pass through the collection and index
+		IMovie[] arr = new IMovie[count];
+		return InOrderTraverse(root, arr);
+	}
+
+	// recursive in-order traversal
+	private IMovie[] InOrderTraverse(BTreeNode current, IMovie[] arr)
+	{
+		if (current != null)
+		{
+			InOrderTraverse(current.LChild, arr);
+			int i = 0;
+			while (arr[i] != null) i++; // skip to null
+			arr[i] = current.Movie;
+			Console.Write("inserted @ " + i + "\n");
+			InOrderTraverse(current.RChild, arr);
+		}
+		return arr;
 	}
 
 
