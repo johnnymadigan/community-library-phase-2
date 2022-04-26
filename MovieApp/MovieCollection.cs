@@ -64,6 +64,8 @@ public class MovieCollection : IMovieCollection
 	// Post-condition: return true if this movie collection is empty; otherwise, return false.
 	public bool IsEmpty()
 	{
+		// author: Johnny Madigan
+
 		return root == null;
 	}
 
@@ -72,29 +74,35 @@ public class MovieCollection : IMovieCollection
 	// Post-condition: the movie has been added into this movie collection
 	public bool Insert(IMovie movie)
 	{
-		if (!Search(movie)) // invariant: no duplicates in this movie collection
+		// author: Johnny Madigan
+
+		if (!Search(movie)) // no duplicates
 		{
-			if (root == null) root = new BTreeNode(movie); // empty tree? first node
-			else Insert(movie, root); // kick off recursive travel to insert as leaf
+			// If tree is empty? set movie as first node...
+			// otherwise kick off recursive travel to insert as leaf
+			if (IsEmpty()) root = new BTreeNode(movie); 
+			else Insert(movie, root); 
 			count++;
 			return true;
 		}
 		else return false;
 	}
 
-	// PUBLIC INSERT ensures the first call of this method is with a root that isn't null
-	//
-	// pre: ptr != null
-	// post: item is inserted to the binary search tree rooted at ptr
+	// PRIVATE recursive insert, to be initiated by public insert (ensures starting parent is not null)
+	// pre: parent != null
+	// post: item is inserted to the BST based on it's title
 	// recursive
 	private void Insert(IMovie movie, BTreeNode parent)
 	{
-		// 
+		// author: Johnny Madigan
+
+		// If movie belongs in the left subtree, insert as leaf otherwise continue travel left
 		if (movie.CompareTo(parent.Movie) < 0)
 		{
 			if (parent.LChild == null) parent.LChild = new BTreeNode(movie);
 			else Insert(movie, parent.LChild);
 		}
+		// If movie belongs in the right subtree, insert as leaf otherwise continue travel right
 		else
 		{
 			if (parent.RChild == null) parent.RChild = new BTreeNode(movie);
@@ -108,6 +116,8 @@ public class MovieCollection : IMovieCollection
 	// Post-condition: the movie is removed out of this BST, if it is in this BST
 	public bool Delete(IMovie movie)
 	{
+		// author: Johnny Madigan
+
 		//To be completed
 		// there are three cases to consider:
 		// 1. the node to be deleted is a leaf
@@ -196,6 +206,8 @@ public class MovieCollection : IMovieCollection
 	//	     otherwise, return false.
 	public bool Search(IMovie movie)
 	{
+		// author: Johnny Madigan
+
 		return Search(movie.Title, root) != null;
 	}
 
@@ -205,11 +217,15 @@ public class MovieCollection : IMovieCollection
 	//	     otherwise, return null.
 	public IMovie Search(string movietitle)
 	{
+		// author: Johnny Madigan
+
 		return Search(movietitle, root);
 	}
 
 	private IMovie Search(string title, BTreeNode parent)
 	{
+		// author: Johnny Madigan
+
 		// recursive, return if the object if found, treats each recursion's root as the root
 		// of 0,1,2 children (subtree) r is the subtree's root, NOT THE ENTIRE TREE
 		// but obviously starts with the root of the entire tree as the first one
@@ -227,6 +243,8 @@ public class MovieCollection : IMovieCollection
 	// Post-condition: return an array of movies that are stored in dictionary order by their titles
 	public IMovie[] ToArray()
 	{
+		// author: Johnny Madigan
+
 		//To be completed
 		// in-order traversal
 		// pass through the collection and index
@@ -237,6 +255,8 @@ public class MovieCollection : IMovieCollection
 	// recursive in-order traversal
 	private IMovie[] InOrderTraverse(BTreeNode current, IMovie[] arr)
 	{
+		// author: Johnny Madigan
+
 		if (current != null)
 		{
 			InOrderTraverse(current.LChild, arr);
@@ -256,6 +276,8 @@ public class MovieCollection : IMovieCollection
 	// Post-condition: all the movies have been removed from this movie collection 
 	public void Clear()
 	{
+		// author: Johnny Madigan
+
 		root = null;
 	}
 }
