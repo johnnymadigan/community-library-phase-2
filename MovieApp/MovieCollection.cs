@@ -89,9 +89,8 @@ public class MovieCollection : IMovieCollection
 	}
 
 	// PRIVATE recursive insert, to be initiated by public insert (ensures starting parent is not null)
-	// pre: parent != null
-	// post: item is inserted to the BST based on it's title
-	// recursive
+	// Pre-condition: parent != null
+	// Post-condition: item is inserted to the BST based on it's title
 	private void Insert(IMovie movie, BTreeNode parent)
 	{
 		// author: Johnny Madigan
@@ -113,36 +112,32 @@ public class MovieCollection : IMovieCollection
 
 	// Delete a movie from this movie collection
 	// Pre-condition: nil
-	// Post-condition: the movie is removed out of this BST, if it is in this BST
+	// Post-condition: the movie is removed from the BST (if exists) and the BST is reconnected accordingly
 	public bool Delete(IMovie movie)
 	{
 		// author: Johnny Madigan
 
-		//To be completed
-		// there are three cases to consider:
-		// 1. the node to be deleted is a leaf
-		// 2. the node to be deleted has only one child 
-		// 3. the node to be deleted has both left and right children
+		BTreeNode curr = root;		// current node
+		BTreeNode parent = null;    // current node's parent
 
-
-
-		// search for item and its parent
-		BTreeNode curr = root; // current search reference
-		BTreeNode parent = null; // parent of current
-
-		// while current aint null AND the queried movie does not match the current's movie (found)
-		// we need this kind of search here to keep track of the parent, but all g as BST super quick
+		// While we haven't reached end of tree AND the queried movie hasn't been found...
+		// we will perform a non-recursive search for the movie...
+		// (cannot use other Search() as it does not keep track of parent)
 		while ((curr != null) && (movie.CompareTo(curr.Movie) != 0))
 		{
-			// Traverse to a child node (updating current) and remember the parent
-			parent = curr;
+			parent = curr;												// Remember the parent
 			if (movie.CompareTo(curr.Movie) < 0) curr = curr.LChild;	// Movie in left subtree
 			else curr = curr.RChild;									// Movie in right subtree
 		}
 
-		if (curr != null) // if the search was successful aka current is now the node to DELETE
+		// IF SEARCH WAS SUCCESSFUL, CURRENT IS THE NODE TO DELETE...
+		// THREE SCENARIOS TO HANDLE:
+		// 1. node to delete has 2 children (left n right)
+		// 2. node to delete has only 1 child 
+		// 3. node to delete is a leaf
+		if (curr != null)
 		{
-			// case 3: ITEM HAS 2 CHILDREN
+			// CASE 1
 			if ((curr.LChild != null) && (curr.RChild != null))
 			{
 				// find the right-most node in left subtree of current
@@ -174,24 +169,22 @@ public class MovieCollection : IMovieCollection
 					pp.RChild = p.LChild;
 				}
 			}
-			else // cases 1 & 2: item has no or only one child
+			// CASE 2 & 3
+			else
 			{
-				// temp store the single child
+				// Temporarily store the current's only child or null if none
 				BTreeNode c;
-				if (curr.LChild != null)
-					c = curr.LChild;
-				else
-					c = curr.RChild;
+				if (curr.LChild != null) c = curr.LChild;
+				else c = curr.RChild;
 
-				// remove node current
-				if (curr == root) //need to change root
-					root = c;
+				// If current is the root of the tree, current's child is now the root...
+				// otherwise check current's parent to see if current is in the LEFT or RIGHT subtree...
+				// to correctly connect current's child back to its parent, effectively dropping current
+				if (curr == root) root = c;
 				else
 				{
-					if (curr == parent.LChild)
-						parent.LChild = c;
-					else
-						parent.RChild = c;
+					if (curr == parent.LChild) parent.LChild = c;	// current is in the left subtree
+					else parent.RChild = c;							// current is in the right subtree
 				}
 			}
 			count--;
@@ -208,6 +201,8 @@ public class MovieCollection : IMovieCollection
 	{
 		// author: Johnny Madigan
 
+		// use private SEARCH that takes a title and returns the object...
+		// return true if the object is found (kills 2 birds with 1 stone)
 		return Search(movie.Title, root) != null;
 	}
 
@@ -222,15 +217,16 @@ public class MovieCollection : IMovieCollection
 		return Search(movietitle, root);
 	}
 
+	// PRIVATE recursive search for a movie in the BST via its title
+	// pre: nil
+	// post: return the the movie object if found within this BST, otherwise return null
 	private IMovie Search(string title, BTreeNode parent)
 	{
 		// author: Johnny Madigan
 
-		// recursive, return if the object if found, treats each recursion's root as the root
-		// of 0,1,2 children (subtree) r is the subtree's root, NOT THE ENTIRE TREE
-		// but obviously starts with the root of the entire tree as the first one
 		if (parent != null)
 		{
+			// Return the object if found, otherwise travel to the LEFT or RIGHT subtree and repeat
 			if (title.CompareTo(parent.Movie.Title) == 0) return parent.Movie;
 			else if (title.CompareTo(parent.Movie.Title) < 0) return Search(title, parent.LChild);
 			else return Search(title, parent.RChild);
@@ -245,26 +241,27 @@ public class MovieCollection : IMovieCollection
 	{
 		// author: Johnny Madigan
 
-		//To be completed
-		// in-order traversal
-		// pass through the collection and index
+		// Kick off recursive in-order traversal...
+        // passing an array throughout to be modified along the way
 		IMovie[] arr = new IMovie[count];
-		return InOrderTraverse(root, arr);
+		return InOrderTravel(root, arr);
 	}
 
-	// recursive in-order traversal
-	private IMovie[] InOrderTraverse(BTreeNode current, IMovie[] arr)
+	// PRIVATE recursive in-order traversal, modifying an array throughout the journey
+	// Pre-condition: nil
+	// Post-condition: return the given array modified with a movie
+	private IMovie[] InOrderTravel(BTreeNode current, IMovie[] arr)
 	{
 		// author: Johnny Madigan
 
+		// TODO NEEDS FURTHER EXPLANATION
 		if (current != null)
 		{
-			InOrderTraverse(current.LChild, arr);
+			InOrderTravel(current.LChild, arr);
 			int i = 0;
 			while (arr[i] != null) i++; // skip to null
 			arr[i] = current.Movie;
-			Console.Write("inserted @ " + i + "\n");
-			InOrderTraverse(current.RChild, arr);
+			InOrderTravel(current.RChild, arr);
 		}
 		return arr;
 	}
@@ -278,7 +275,7 @@ public class MovieCollection : IMovieCollection
 	{
 		// author: Johnny Madigan
 
-		root = null;
+		root = null; // drop entire tree
 	}
 }
 
