@@ -254,16 +254,20 @@ public class MovieCollection : IMovieCollection
 	{
 		// author: Johnny Madigan
 
-		// TODO NEEDS FURTHER EXPLANATION
+		// While not a leaf, travel down to LEFT subtree...
+		// then bubble back up 1 node and travel RIGHT...
+        // repeating this pattern effectively travelling to all nodes in-order
 		if (current != null)
 		{
 			InOrderTravel(current.LChild, arr);
+
 			int i = 0;
-			while (arr[i] != null) i++; // skip to null
-			arr[i] = current.Movie;
+			while (arr[i] != null) i++;	// skip to next null space in array
+			arr[i] = current.Movie;		// insert movie into null space
+
 			InOrderTravel(current.RChild, arr);
 		}
-		return arr;
+		return arr; // bubble back up and bring modified array
 	}
 
 
