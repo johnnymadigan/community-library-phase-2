@@ -23,14 +23,12 @@ public interface IMovieCollection
 
 	// Insert a movie into this movie collection
 	// Pre-condition: nil
-	// Post-condition: the movie has been added into this movie collection and return true, if the movie is not in this movie collection;
-	// otherwise, the movie has not been added into this movie collection and return false.
+	// Post-condition: the movie has been added into this movie collection and return true, if the movie is not in this movie collection; otherwise, the movie has not been added into this movie collection and return false.
 	bool Insert(IMovie movie);
 
 	// Delete a movie from this movie collection
 	// Pre-condition: nil
-	// Post-condition: the movie is removed out of this movie collection and return true, if it is in this movie collection;
-	// return false, if it is not in this movie collection
+	// Post-condition: the movie is removed out of this movie collection and return true, if it is in this movie collection; return false, if it is not in this movie collection
 	bool Delete(IMovie movie);
 
 	// Search for a movie in this movie collection
@@ -51,7 +49,7 @@ public interface IMovieCollection
 	// Post-condition: return an array of movies that are stored in dictionary order by their titles
 	IMovie[] ToArray();
 
-	// Clear this BST
+	// Clear this movie collection
 	// Pre-condotion: nil
 	// Post-condition: all the movies have been removed from this movie collection 
 	void Clear();

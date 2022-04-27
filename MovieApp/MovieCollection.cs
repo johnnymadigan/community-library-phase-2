@@ -71,7 +71,7 @@ public class MovieCollection : IMovieCollection
 
 	// Insert a movie into this movie collection
 	// Pre-condition: nil
-	// Post-condition: the movie has been added into this movie collection
+	// Post-condition: the movie has been added into this movie collection and return true, if the movie is not in this movie collection; otherwise, the movie has not been added into this movie collection and return false.
 	public bool Insert(IMovie movie)
 	{
 		// author: Johnny Madigan
@@ -112,7 +112,7 @@ public class MovieCollection : IMovieCollection
 
 	// Delete a movie from this movie collection
 	// Pre-condition: nil
-	// Post-condition: the movie is removed from the BST (if exists) and the BST is reconnected accordingly
+	// Post-condition: the movie is removed out of this movie collection and return true, if it is in this movie collection; return false, if it is not in this movie collection
 	public bool Delete(IMovie movie)
 	{
 		// author: Johnny Madigan
@@ -272,7 +272,7 @@ public class MovieCollection : IMovieCollection
 
 
 
-	// Clear this BST
+	// Clear this movie collection
 	// Pre-condotion: nil
 	// Post-condition: all the movies have been removed from this movie collection 
 	public void Clear()
