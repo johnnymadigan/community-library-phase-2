@@ -6,7 +6,7 @@ namespace MovieApp
     {
 		public static IMovieCollection lib = new MovieCollection();
 
-		public static IMovie eeaao = new Movie("eeaao", MovieGenre.Drama, MovieClassification.M15Plus, 999, 1);
+		public static IMovie eeaao = new Movie("eeaao", MovieGenre.Drama, MovieClassification.M15Plus, 999, 10);
 		public static IMovie handmaiden = new Movie("handmaiden", MovieGenre.Drama, MovieClassification.M15Plus, 999, 1);
 		public static IMovie batman = new Movie("batman", MovieGenre.Action, MovieClassification.M15Plus, 999, 1);
 		public static IMovie arcane = new Movie("arcane", MovieGenre.Drama, MovieClassification.M15Plus, 999, 1);
@@ -33,10 +33,17 @@ namespace MovieApp
 			Console.WriteLine("━━┅━━━┅━━┅━━╾╯");
 		}
 
-		public static bool MovieTests()
+		public static void MovieTests()
         {
-			return false;
-        }
+			// MOVIE'S COMPARETO HAS BEEN IMPLICITY TESTED IN THE CREATION OF THE BST
+			// TESTING ADD/REMOVE/TOSTRING
+			IMember dude = new Member("bofa", "dem");
+			Console.WriteLine($"{eeaao.ToString()} available copies\n");
+			eeaao.AddBorrower(dude);
+			Console.WriteLine($"{eeaao.ToString()} available copies (-1)\n");
+			eeaao.RemoveBorrower(dude);
+			Console.WriteLine($"{eeaao.ToString()} available copies (+1)\n");
+		}
 
 		public static void AddTests()
         {
