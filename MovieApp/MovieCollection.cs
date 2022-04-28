@@ -142,8 +142,7 @@ public class MovieCollection : IMovieCollection
 			// CASE 1
 			if ((curr.LChild != null) && (curr.RChild != null))
 			{
-				// find the right-most node in left subtree of current
-				if (curr.LChild.RChild == null) // a special case: the right subtree of ptr.LChild is empty
+				if (curr.LChild.RChild == null) // find the right-most node in left subtree of current
 				{
 					// replace current's movie with it's left node's movie (keeps correct order)
 					// set pointer to point to left child's left child (right is null remember) effectively dropping,
