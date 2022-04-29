@@ -70,7 +70,9 @@ public class Movie : IMovie
     {
         // author: Johnny Madigan
 
-        if (AvailableCopies >= 1 && !Borrowers.Search(member))
+        // ADD MEMBER has no return val...
+        // so check member is not a duplicate AND collection is not full
+        if (AvailableCopies >= 1 && !Borrowers.Search(member) && !Borrowers.IsFull())
         {
             Borrowers.Add(member);
             AvailableCopies--;
@@ -78,7 +80,6 @@ public class Movie : IMovie
             return true;
         }
         else return false;
-        
     }
 
     //Remove a member from the borrower list of this movie
