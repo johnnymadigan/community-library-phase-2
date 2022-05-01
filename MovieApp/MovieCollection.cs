@@ -111,7 +111,6 @@ public class MovieCollection : IMovieCollection
 		}
 	}
 
-
 	// Delete a movie from this movie collection
 	// Pre-condition: nil
 	// Post-condition: the movie is removed out of this movie collection and return true, if it is in this movie collection; return false, if it is not in this movie collection
@@ -119,77 +118,75 @@ public class MovieCollection : IMovieCollection
 	{
 		// author: Johnny Madigan
 
-		BTreeNode curr = root;		// current node
-		BTreeNode parent = null;    // current node's parent
+		BTreeNode toDelete = root;
+		BTreeNode toDeleteParent = null;
 
 		// While we haven't reached end of tree AND the queried movie hasn't been found...
-		// we will perform a non-recursive search for the movie...
-		// (cannot use other Search() as it does not keep track of parent)
-		while ((curr != null) && (movie.CompareTo(curr.Movie) != 0))
+		// we will perform a non-recursive search for the movie (cannot use SEARCH as it doesn't keep track of parent)
+		while ((toDelete != null) && (movie.CompareTo(toDelete.Movie) != 0))
 		{
-			parent = curr;												// Remember the parent
-			if (movie.CompareTo(curr.Movie) < 0) curr = curr.LChild;	// Movie in left subtree
-			else curr = curr.RChild;									// Movie in right subtree
+			toDeleteParent = toDelete;												// Remember the parent
+			if (movie.CompareTo(toDelete.Movie) < 0) toDelete = toDelete.LChild;	// Movie in LEFT subtree
+			else toDelete = toDelete.RChild;										// Movie in RIGHT subtree
 		}
 
-		// IF SEARCH WAS SUCCESSFUL, CURRENT IS THE NODE TO DELETE...
-		// THREE SCENARIOS TO HANDLE:
+		// IF SEARCH WAS SUCCESSFUL, THERE ARE 3 SCENARIOS TO HANDLE:
 		// 1. node to delete has 2 children (left n right)
 		// 2. node to delete has only 1 child 
 		// 3. node to delete is a leaf
-		if (curr != null)
+		if (toDelete != null)
 		{
 			// CASE 1
-			if ((curr.LChild != null) && (curr.RChild != null))
+			if ((toDelete.LChild != null) && (toDelete.RChild != null))
 			{
-				if (curr.LChild.RChild == null) // find the right-most node in left subtree of current
+				if (toDelete.LChild.RChild == null) // if no right nodes in LEFT subtree...
 				{
-					// replace current's movie with it's left node's movie (keeps correct order)
-					// set pointer to point to left child's left child (right is null remember) effectively dropping,
-					// C#'s garbage collection is better than C
-					curr.Movie = curr.LChild.Movie;
-					curr.LChild = curr.LChild.LChild;
+					// replace toDelete's movie with its left child's movie (keeps correct order)
+					// set toDelete's left pointer to skip over its left child effectively dropping it...
+					// C#'s garbage collector will clean up the dropped node
+					toDelete.Movie = toDelete.LChild.Movie;
+					toDelete.LChild = toDelete.LChild.LChild;
 				}
-				else // if the left child's subtree has both left and right children again
+				else
 				{
-					// quickly store left child subtree parent and left child
-					BTreeNode p = curr.LChild;
-					BTreeNode pp = curr; // parent of p (kinda uselesss making it current but good practice for default value)
+					BTreeNode p = toDelete.LChild; // LEFT subtree's root
+					BTreeNode pp = toDelete; // parent of p
 
-					// travel to most right leaf node starting from tHAT subtree and keep track of the parent
+					// in the LEFT subtree, travel to the most RIGHT node (not necessarily leaf) keeping track of the parent
 					while (p.RChild != null)
 					{
 						pp = p;
 						p = p.RChild;
 					}
-					// replace current's movie with this far right (keeps correct order)
-					// set pointer to point to left child's left child (right is null remember) effectively dropping,
-					// C#'s garbage collection is better than C
-					// copy the item at p to ptr
-					curr.Movie = p.Movie;
+					// replace toDelete's movie with this far-right node's movie (keeps correct order)
+					// set parent of far-right's RIGHT pointer to skip to far-right's LEFT child...
+					// effectively dropping far-right while keeping any subtrees connected
+					// C#'s garbage collector will clean up the dropped node
+					toDelete.Movie = p.Movie;
 					pp.RChild = p.LChild;
 				}
 			}
 			// CASE 2 & 3
 			else
 			{
-				// Temporarily store the current's only child or null if none
 				BTreeNode c;
-				if (curr.LChild != null) c = curr.LChild;
-				else c = curr.RChild;
 
-				// If current is the root of the tree, current's child is now the root...
-				// otherwise check current's parent to see if current is in the LEFT or RIGHT subtree...
-				// to correctly connect current's child back to its parent, effectively dropping current
-				if (curr == root) root = c;
+				// Temporarily store toDelete's only child (prioritise left then right/null)
+				if (toDelete.LChild != null) c = toDelete.LChild;
+				else c = toDelete.RChild;
+
+				// If toDelete is the root of the BST, toDelete's child is now the root...
+				// otherwise check toDelete's parent to see if toDelete is in the LEFT or RIGHT subtree
+				// to correctly reconnect toDelete's child back to its parent, effectively dropping toDelete
+				if (toDelete == root) root = c;
 				else
 				{
-					if (curr == parent.LChild) parent.LChild = c;	// current is in the left subtree
-					else parent.RChild = c;							// current is in the right subtree
+					if (toDelete == toDeleteParent.LChild) toDeleteParent.LChild = c;	// toDelete is in LEFT subtree
+					else toDeleteParent.RChild = c;                                     // toDelete is in RIGHT subtree
 				}
 			}
 			count--;
-			return true; // deletion complete
+			return true; // deletion completed
 		}
 		else return false; // not found
 	}
@@ -279,8 +276,8 @@ public class MovieCollection : IMovieCollection
 	public void Clear()
 	{
 		// author: Johnny Madigan
-
-		root = null; // drop entire tree
+		
+		root = null; // Drop entire tree... C#'s garbage collector will clean up these unused nodes
 		count = 0;
 	}
 }
